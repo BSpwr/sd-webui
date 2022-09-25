@@ -9,6 +9,17 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $SCRIPT_DIR
 export PYTHONPATH=$SCRIPT_DIR
 
+# Setup git so we can git pull
+git config --global user.email "_"
+git config --global user.name "_"
+git remote set-url origin https://github.com/BSpwr/sd-webui.git
+
+# Git pull to get the newest version
+git pull
+
+# These dependencies were missing from dev? Install just in case
+pip install streamlit-server-state
+
 MODEL_DIR="${SCRIPT_DIR}/model_cache"
 # Array of model files to pre-download
 # local filename
