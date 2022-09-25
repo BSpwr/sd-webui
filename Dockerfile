@@ -1,31 +1,21 @@
-# Assumes host environment is AMD64 architecture
+FROM docker.io/rocm/pytorch:rocm5.2.3_ubuntu20.04_py3.7_pytorch_1.12.1
 
-# We should use the Pytorch CUDA/GPU-enabled base image. See:  https://hub.docker.com/r/pytorch/pytorch/tags
-# FROM nvidia/cuda:11.3.1-runtime-ubuntu20.04
-
-# Assumes AMD64 host architecture
-FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-runtime
-
-WORKDIR /install
-
-SHELL ["/bin/bash", "-c"]
+WORKDIR /sd
 
 RUN apt-get update && \
     apt-get install -y wget git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./sd_requirements.txt /install/
-RUN pip install -r /install/sd_requirements.txt
+COPY ./sd_requirements.txt /sd/
+COPY ./requirements.txt /sd/
+COPY ./ext_requirements.txt /sd/
+COPY ./ui_requirements.txt /sd/
 
-COPY ./requirements.txt /install/
-RUN pip install -r /install/requirements.txt
-
-COPY ./ext_requirements.txt /install
-RUN pip install -r /install/ext_requirements.txt
-
-COPY ./ui_requirements.txt /install/
-RUN pip install -r /install/ui_requirements.txt
+RUN pip install -r /sd/sd_requirements.txt \
+ && pip install -r /sd/requirements.txt \
+ && pip install -r /sd/ext_requirements.txt \
+ && pip install -r /sd/ui_requirements.txt
 
 # Install font for prompt matrix
 COPY /data/DejaVuSans.ttf /usr/share/fonts/truetype/
@@ -34,6 +24,5 @@ ENV PYTHONPATH=/sd
 
 EXPOSE 7860 8501
 
-COPY ./entrypoint.sh /sd/
+COPY . /sd
 ENTRYPOINT /sd/entrypoint.sh
-

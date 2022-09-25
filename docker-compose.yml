@@ -9,23 +9,16 @@ services:
       dockerfile: Dockerfile
     env_file: .env_docker
     volumes:
-      - .:/sd
-      - ./outputs:/sd/outputs
-      - ./model_cache:/sd/model_cache
-      - root_profile:/root
+      - ../sd-output:/sd/outputs
+      - ../sd-data:/sd/models_external
     ports:
-      - '7860:7860'
+      - '8502:7860'
       - '8501:8501'
     healthcheck:
       test: curl --fail http://localhost:8501 --head || curl --fail http://localhost:7860 --head || echo 1
       interval: 30s
       timeout: 1s
       retries: 10
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [ gpu ]
-
-volumes:
-  root_profile:
+    devices:
+      - "/dev/kfd"
+      - "/dev/dri"

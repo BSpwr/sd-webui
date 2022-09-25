@@ -29,11 +29,11 @@ general:
     grid_format: "jpg:95"
     n_rows: -1
     no_verify_input: False
-    no_half: False
+    no_half: True
     use_float16: False
-    precision: "autocast"
-    optimized: False
-    optimized_turbo: False
+    precision: "full"
+    optimized: True
+    optimized_turbo: True
     optimized_config: "optimizedSD/v1-inference.yaml"
     enable_attention_slicing: False
     enable_minimal_memory_usage : False

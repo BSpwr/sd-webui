@@ -24,6 +24,14 @@ MODEL_FILES=(
     'model.ckpt src/latent-diffusion/experiments/pretrained_models https://heibox.uni-heidelberg.de/f/578df07c8fc04ffbadf3/?dl=1 c209caecac2f97b4bb8f4d726b70ac2ac9b35904b7fc99801e1f5e61f9210c13'
 )
 
+# Link Stable Diffusion Model File
+mkdir -p ${MODEL_DIR}
+sd_model=${MODEL_FILES[0]}
+sd_model=($sd_model)
+ln -sfn /sd/models_external/stable-diffusion-v1-4.ckpt "${MODEL_DIR}/${sd_model[0]}.${sd_model[3]}"
+
+export PYTORCH_HIP_ALLOC_CONF=max_split_size_mb:128 # Limit pytorch memory fragmentation
+export HSA_OVERRIDE_GFX_VERSION=10.3.0 # Set necessary export for Stable Diffusion to work on RDNA 5700XT using ROCm
 
 # Function to checks for valid hash for model files and download/replaces if invalid or does not exist
 validateDownloadModel() {
